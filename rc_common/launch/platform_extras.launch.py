@@ -1,12 +1,12 @@
 from launch import LaunchDescription
-from launch.actions import (
-    DeclareLaunchArgument,
-)
+from launch.actions import DeclareLaunchArgument
+from launch_ros.substitutions import FindPackageShare
+
 
 ARGUMENTS = [
     DeclareLaunchArgument(
         'setup_path',
-        default_value='/root/workspace/src'
+        default_value=FindPackageShare('rc_common')
     ),
 
     DeclareLaunchArgument(

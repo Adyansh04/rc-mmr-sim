@@ -27,7 +27,7 @@ def generate_launch_description():
                 {
                     'use_sim_time': True
                     ,
-                    'config_file': '/root/workspace/src/sensors/config/lidar2d_1.yaml'
+                    'config_file': PathJoinSubstitution([FindPackageShare('rc_common'), 'sensors/config/lidar2d_1.yaml'])
                     ,
                 }
                 ,

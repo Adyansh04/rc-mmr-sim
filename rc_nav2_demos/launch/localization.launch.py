@@ -44,7 +44,7 @@ from launch.substitutions import (
 )
 
 from launch_ros.actions import PushRosNamespace
-
+from launch_ros.substitutions import FindPackageShare
 from nav2_common.launch import RewrittenYaml
 
 
@@ -53,7 +53,7 @@ ARGUMENTS = [
                           choices=['true', 'false'],
                           description='Use sim time'),
     DeclareLaunchArgument('setup_path',
-                          default_value='/root/workspace/src',
+                          default_value=FindPackageShare('rc_common'),
                           description='Clearpath setup path'),
     DeclareLaunchArgument('scan_topic',
                           default_value='',

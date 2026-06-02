@@ -57,7 +57,7 @@ def generate_launch_description():
     # Launch Arguments
     arg_setup_path = DeclareLaunchArgument(
         'setup_path',
-        default_value='/root/workspace/src'
+        default_value=FindPackageShare('rc_common')
     )
 
     arg_use_sim_time = DeclareLaunchArgument(
@@ -93,7 +93,7 @@ def generate_launch_description():
     )
 
     # Launch Configurations
-    setup_path = '/root/workspace/src'
+    setup_path = FindPackageShare('rc_common')
     use_sim_time = LaunchConfiguration('use_sim_time')
     namespace = LaunchConfiguration('namespace')
     launch_moveit = LaunchConfiguration('launch_moveit')

@@ -34,16 +34,17 @@
 import os
 import xacro
 
+from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, OpaqueFunction
 from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
-
+from launch_ros.substitutions import FindPackageShare
 
 def launch_setup(context, *args, **kwargs):
     # Launch Configurations
     use_sim_time = LaunchConfiguration('use_sim_time')
-    setup_path_context = '/root/workspace/src'
+    setup_path_context = get_package_share_directory('rc_common')
 
     # Namespace
     namespace = 'rc'
@@ -86,7 +87,7 @@ def launch_setup(context, *args, **kwargs):
 def generate_launch_description():
     arg_setup_path = DeclareLaunchArgument(
         'setup_path',
-        default_value='/root/workspace/src',
+        default_value=FindPackageShare('rc_common'),
         description='Clearpath setup path'
     )
     arg_use_sim_time = DeclareLaunchArgument(

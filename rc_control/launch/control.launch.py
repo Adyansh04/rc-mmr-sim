@@ -31,11 +31,13 @@
 # Redistribution and use in source and binary forms, with or without
 # modification, is not permitted without the express permission
 # of Clearpath Robotics.
+from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, GroupAction, OpaqueFunction
 from launch.conditions import IfCondition, UnlessCondition
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch_ros.actions import Node
+from launch_ros.substitutions import FindPackageShare
 from clearpath_config.common.utils.dictionary import unflatten_dict
 from clearpath_config.common.utils.yaml import read_yaml
 
@@ -56,7 +58,7 @@ REMAPPINGS = [
 
 
 def launch_setup(context, *args, **kwargs):
-    setup_path = '/root/workspace/src'
+    setup_path = get_package_share_directory('rc_common')
     use_sim_time = LaunchConfiguration('use_sim_time')
 
     # Controllers
@@ -118,7 +120,7 @@ def generate_launch_description():
     # Launch Configurations
     arg_setup_path = DeclareLaunchArgument(
          'setup_path',
-         default_value='/root/workspace/src'
+         default_value=FindPackageShare('rc_common')
      )
 
     arg_use_sim_time = DeclareLaunchArgument(

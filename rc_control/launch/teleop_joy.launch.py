@@ -30,16 +30,17 @@ from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch_ros.actions import Node
+from launch_ros.substitutions import FindPackageShare
 
 
 def generate_launch_description():
     # Launch Configurations
-    setup_path = '/root/workspace/src'
+    setup_path = FindPackageShare('rc_common')
     use_sim_time = LaunchConfiguration('use_sim_time')
 
     arg_setup_path = DeclareLaunchArgument(
         'setup_path',
-        default_value='/root/workspace/src'
+        default_value=FindPackageShare('rc_common')
     )
 
     arg_use_sim_time = DeclareLaunchArgument(

@@ -10,10 +10,18 @@ def generate_launch_description():
 
     # Include Packages
 
-    launch_file_lidar2d_0 = '/root/workspace/src/sensors/launch/lidar2d_0.launch.py'
-    launch_file_lidar2d_1 = '/root/workspace/src/sensors/launch/lidar2d_1.launch.py'
-    launch_file_camera_0 = '/root/workspace/src/sensors/launch/camera_0.launch.py'
-    launch_file_imu_0 = '/root/workspace/src/sensors/launch/imu_0.launch.py'
+    launch_file_lidar2d_0 = PathJoinSubstitution([
+        FindPackageShare('rc_common'), 'sensors/launch/lidar2d_0.launch.py'
+    ])
+    launch_file_lidar2d_1 = PathJoinSubstitution([
+        FindPackageShare('rc_common'), 'sensors/launch/lidar2d_1.launch.py'
+    ])
+    launch_file_camera_0 = PathJoinSubstitution([
+        FindPackageShare('rc_common'), 'sensors/launch/camera_0.launch.py'
+    ])
+    launch_file_imu_0 = PathJoinSubstitution([
+        FindPackageShare('rc_common'), 'sensors/launch/imu_0.launch.py'
+    ])
 
     # Include launch files
     launch_lidar2d_0 = IncludeLaunchDescription(

@@ -5,11 +5,12 @@ from launch.substitutions import (Command, FindExecutable,
                                   PathJoinSubstitution, LaunchConfiguration)
 from launch_ros.actions import Node
 from launch_ros.parameter_descriptions import ParameterValue
+from launch_ros.substitutions import FindPackageShare
 
 
 def generate_launch_description():
     # Launch Configurations
-    setup_path = '/root/workspace/src'
+    setup_path = FindPackageShare('rc_common')
     robot_description_command = LaunchConfiguration('robot_description_command')
     use_sim_time = LaunchConfiguration('use_sim_time')
     namespace = LaunchConfiguration('namespace')
@@ -20,7 +21,7 @@ def generate_launch_description():
     # Launch Arguments
     arg_setup_path = DeclareLaunchArgument(
         'setup_path',
-        default_value='/root/workspace/src'
+        default_value=FindPackageShare('rc_common')
     )
 
     arg_namespace = DeclareLaunchArgument(

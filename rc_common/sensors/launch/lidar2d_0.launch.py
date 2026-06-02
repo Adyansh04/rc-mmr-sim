@@ -16,8 +16,8 @@ def generate_launch_description():
     prefix = LaunchConfiguration('prefix')
 
     # Nodes
-    node_imu_0_gz_bridge = Node(
-        name='imu_0_gz_bridge',
+    node_lidar2d_0_gz_bridge = Node(
+        name='lidar2d_0_gz_bridge',
         executable='parameter_bridge',
         package='ros_gz_bridge',
         namespace='rc/sensors/',
@@ -27,7 +27,7 @@ def generate_launch_description():
                 {
                     'use_sim_time': True
                     ,
-                    'config_file': '/root/workspace/src/sensors/config/imu_0.yaml'
+                    'config_file': PathJoinSubstitution([FindPackageShare('rc_common'), 'sensors/config/lidar2d_0.yaml'])
                     ,
                 }
                 ,
@@ -35,8 +35,8 @@ def generate_launch_description():
         ,
     )
 
-    node_imu_0_static_tf = Node(
-        name='imu_0_static_tf',
+    node_lidar2d_0_static_tf = Node(
+        name='lidar2d_0_static_tf',
         executable='static_transform_publisher',
         package='tf2_ros',
         namespace='rc',
@@ -45,11 +45,11 @@ def generate_launch_description():
             [
                 '--frame-id'
                 ,
-                'imu_0_link'
+                'lidar2d_0_link'
                 ,
                 '--child-frame-id'
                 ,
-                'rc/robot/base_link/imu_0'
+                'rc/robot/base_link/lidar2d_0'
                 ,
             ]
         ,
@@ -83,6 +83,6 @@ def generate_launch_description():
     # Create LaunchDescription
     ld = LaunchDescription()
     ld.add_action(launch_arg_prefix)
-    ld.add_action(node_imu_0_gz_bridge)
-    ld.add_action(node_imu_0_static_tf)
+    ld.add_action(node_lidar2d_0_gz_bridge)
+    ld.add_action(node_lidar2d_0_static_tf)
     return ld

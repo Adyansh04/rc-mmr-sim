@@ -27,7 +27,9 @@ def generate_launch_description():
                 {
                     'use_sim_time': True
                     ,
-                    'config_file': '/root/workspace/src/sensors/config/camera_0.yaml'
+                    'config_file': PathJoinSubstitution([
+                        FindPackageShare('rc_common'), 'sensors/config/camera_0.yaml'
+                    ])
                     ,
                 }
                 ,

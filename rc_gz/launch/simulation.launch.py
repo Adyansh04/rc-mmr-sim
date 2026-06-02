@@ -4,7 +4,8 @@ from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument
 from launch.actions import IncludeLaunchDescription
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import EnvironmentVariable, LaunchConfiguration, PathJoinSubstitution
+from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
+from launch_ros.substitutions import FindPackageShare
 
 
 ARGUMENTS = [
@@ -21,7 +22,7 @@ ARGUMENTS = [
                           ],
                           description='Gazebo World'),
     DeclareLaunchArgument('setup_path',
-                          default_value='/root/workspace/src',
+                          default_value=FindPackageShare('rc_common'),
                           description='Clearpath setup path'),
     DeclareLaunchArgument('use_sim_time', default_value='true',
                           choices=['true', 'false'],

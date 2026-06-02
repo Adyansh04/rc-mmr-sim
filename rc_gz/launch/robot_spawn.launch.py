@@ -16,6 +16,8 @@
 
 import os
 
+from ament_index_python.packages import get_package_share_directory
+
 from launch import LaunchDescription
 from launch.actions import (
     DeclareLaunchArgument,
@@ -47,7 +49,7 @@ ARGUMENTS = [
     DeclareLaunchArgument('world', default_value='warehouse',
                           description='Gazebo World'),
     DeclareLaunchArgument('setup_path',
-                          default_value='/root/workspace/src',
+                          default_value=FindPackageShare('rc_common'),
                           description='Clearpath setup path'),
     DeclareLaunchArgument('generate',
                           default_value='false',
@@ -64,7 +66,7 @@ ARGUMENTS.append(DeclareLaunchArgument('z', default_value='0.15',
 
 
 def launch_setup(context, *args, **kwargs):
-    setup_path = '/root/workspace/src'
+    setup_path = get_package_share_directory('rc_common')
     world = LaunchConfiguration('world')
     use_sim_time = LaunchConfiguration('use_sim_time')
     x, y, z = LaunchConfiguration('x'), LaunchConfiguration('y'), LaunchConfiguration('z')
