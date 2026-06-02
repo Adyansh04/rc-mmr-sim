@@ -1,0 +1,100 @@
+serial_number: a300-00000
+version: 0
+system:
+  hosts:
+    - hostname: cpr-a300-00000
+      ip: 192.168.131.1
+  ros2:
+    namespace: rc
+platform:
+  attachments:
+    - name: front_bumper
+      type: a300.bumper
+      parent: front_bumper_mount
+    - name: rear_bumper
+      type: a300.bumper
+      parent: rear_bumper_mount
+    - name: top_plate
+      type: a300.top_plate
+  mcu:
+    protocol: proton
+sensors:
+  imu:
+  - model: microstrain_imu
+    urdf_enabled: true
+    launch_enabled: true
+    parent: base_link
+    xyz: [0.0, 0.0, 0.0]
+    rpy: [0.0, 0.0, 0.0]
+    ros_parameters:
+      microstrain_inertial_driver:
+        imu_frame_id: imu_0_link
+        port: /dev/microstrain_main
+        use_enu_frame: true
+  lidar2d:
+  - model: hokuyo_ust
+    urdf_enabled: true
+    launch_enabled: true
+    parent: top_plate_front_mount
+    xyz: [-0.1, 0.0, 0.0]
+    rpy: [0.0, 0.0, 0.0]
+    ros_parameters:
+      urg_node:
+        laser_frame_id: lidar2d_0_laser
+        ip_address: 192.168.131.20
+        ip_port: 10940
+        angle_min: -3.141592653589793
+        angle_max: 3.141592653589793
+  - model: hokuyo_ust
+    urdf_enabled: true
+    launch_enabled: true
+    parent: top_plate_rear_mount
+    xyz: [0.1, 0.0, 0.0]
+    rpy: [0.0, 0.0, 3.1415]
+    ros_parameters:
+      urg_node:
+        laser_frame_id: lidar2d_1_laser
+        ip_address: 192.168.131.21
+        ip_port: 10940
+        angle_min: -3.141592653589793
+        angle_max: 3.141592653589793
+  camera:
+  - model: intel_realsense
+    urdf_enabled: true
+    launch_enabled: true
+    parent: base_link
+    xyz: [0.445, 0.0, 0.1]
+    rpy: [0.0, 0.0, 0.0]
+    ros_parameters:
+      intel_realsense:
+        camera_name: camera_0
+        device_type: d435
+        serial_no: "0"
+        enable_color: true
+        rgb_camera.color_profile: 640,480,30
+        enable_depth: true
+        depth_module.depth_profile: 640,480,15
+        pointcloud.enable: true
+
+manipulators:
+  moveit:
+    enable: true
+  arms:
+    - model: universal_robots
+      parent: default_mount
+      xyz: [0.0, 0.0, 0.0]
+      rpy: [0.0, 0.0, 0.0]
+      ur_type: ur5e
+      robot_ip: 192.168.131.40
+      headless_mode: false
+      kinematics_parameters_file: "$(find ur_description)/config/ur5e/default_kinematics.yaml"
+      poses:
+        - name: custom
+          joints: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+      gripper:
+        model: robotiq_2f_140
+        xyz: [0.0, 0.0, 0.0]
+        rpy: [0.0, 0.0, 0.0]
+        poses:
+          - name: custom
+            joints: [0.0]
