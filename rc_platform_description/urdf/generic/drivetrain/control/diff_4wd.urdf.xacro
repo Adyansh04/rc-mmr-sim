@@ -3,10 +3,35 @@
 
   <xacro:macro name="generic_drivetrain_control_diff_4wd" params="name hardware_plugin">
 
-    <!-- This is the same as omni_4wd -->
-    <xacro:include filename="$(find rc_platform_description)/urdf/generic/drivetrain/control/omni_4wd.urdf.xacro"/>
-    <xacro:generic_drivetrain_control_omni_4wd name="${name}" hardware_plugin="${hardware_plugin}"/>
+    <!-- Gazebo Controller -->
+    <xacro:include filename="$(find rc_platform_description)/urdf/generic/gazebo.urdf.xacro"/>
 
+    <!-- ROS2 controls -->
+    <ros2_control name="${name}_hardware" type="system">
+      <hardware>
+        <plugin>${hardware_plugin}</plugin>
+      </hardware>
+      <joint name="front_left_wheel_joint">
+        <command_interface name="velocity"/>
+        <state_interface name="position"/>
+        <state_interface name="velocity"/>
+      </joint>
+      <joint name="front_right_wheel_joint">
+        <command_interface name="velocity"/>
+        <state_interface name="position"/>
+        <state_interface name="velocity"/>
+      </joint>
+      <joint name="rear_left_wheel_joint">
+        <command_interface name="velocity"/>
+        <state_interface name="position"/>
+        <state_interface name="velocity"/>
+      </joint>
+      <joint name="rear_right_wheel_joint">
+        <command_interface name="velocity"/>
+        <state_interface name="position"/>
+        <state_interface name="velocity"/>
+      </joint>
+    </ros2_control>
   </xacro:macro>
 
 </robot>

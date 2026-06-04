@@ -20,23 +20,9 @@
     <xacro:property name="wheel_track" value="0.562"/>
 
     <!-- Chassis Positions relative to center of rotation -->
-    <xacro:if value="${control == 'diff_4wd' or control == 'omni_4wd'}">
-      <xacro:property name="chassis_x" value="0"/>
-      <xacro:property name="chassis_y" value="0"/>
-      <xacro:property name="chassis_z" value="0"/>
-    </xacro:if>
-
-    <xacro:if value="${control == 'diff_fwd'}">
-      <xacro:property name="chassis_x" value="${-wheel_base / 2}"/>
-      <xacro:property name="chassis_y" value="0"/>
-      <xacro:property name="chassis_z" value="0"/>
-    </xacro:if>
-
-    <xacro:if value="${control == 'diff_rwd'}">
-      <xacro:property name="chassis_x" value="${wheel_base / 2}"/>
-      <xacro:property name="chassis_y" value="0"/>
-      <xacro:property name="chassis_z" value="0"/>
-    </xacro:if>
+    <xacro:property name="chassis_x" value="0"/>
+    <xacro:property name="chassis_y" value="0"/>
+    <xacro:property name="chassis_z" value="0"/>
 
     <!-- Suspension Beam Mounting Positions -->
     <xacro:property name="chassis_suspension_mount_x" value="0.0"/>
@@ -150,7 +136,7 @@
 
     <!-- Hardware  -->
     <xacro:if value="$(arg is_sim)">
-      <xacro:property name="hardware_plugin" value="gz_ros2_control/GazeboSimSystem"/>
+      <xacro:property name="hardware_plugin" value="webots_ros2_control::Ros2ControlSystem"/>
     </xacro:if>
     <xacro:unless value="$(arg is_sim)">
       <xacro:property name="hardware_plugin" value="clearpath_hardware_interfaces/LynxHardware"/>
@@ -169,20 +155,11 @@
     <!-- Base Footprint: on the ground below the robot -->
     <link name="base_footprint"/>
 
-    <xacro:if value="${control == 'diff_4wd' or control == 'omni_4wd' or control == 'diff_fwd'}">
-      <joint name="base_footprint_joint" type="fixed">
-        <origin xyz="0 0 ${front_wheel_radius}" rpy="0 0 0" />
-        <parent link="chassis_link" />
-        <child link="base_footprint" />
-      </joint>
-    </xacro:if>
-    <xacro:if value="${control == 'diff_rwd'}">
-      <joint name="base_footprint_joint" type="fixed">
-        <origin xyz="0 0 ${rear_wheel_radius}" rpy="0 0 0" />
-        <parent link="chassis_link" />
-        <child link="base_footprint" />
-      </joint>
-    </xacro:if>
+    <joint name="base_footprint_joint" type="fixed">
+      <origin xyz="0 0 ${front_wheel_radius}" rpy="0 0 0" />
+      <parent link="chassis_link" />
+      <child link="base_footprint" />
+    </joint>
 
   </xacro:macro>
 </robot>

@@ -30,16 +30,16 @@
       </collision>
     </link>
 
-    <gazebo>
-      <plugin filename="libgz-sim-wheel-slip-system.so" name="gz::sim::systems::WheelSlip">
-        <wheel link_name="${prefix}_${side}_wheel_link">
-          <slip_compliance_lateral>0.75</slip_compliance_lateral>
-          <slip_compliance_longitudinal>0.75</slip_compliance_longitudinal>
-          <wheel_normal_force>113</wheel_normal_force>
-          <wheel_radius>${a300_outdoor_wheel_radius}</wheel_radius>
-        </wheel>
-      </plugin>
-    </gazebo>
+    <!-- <gazebo> -->
+      <!-- <plugin filename="libgz-sim-wheel-slip-system.so" name="gz::sim::systems::WheelSlip"> -->
+        <!-- <wheel link_name="${prefix}_${side}_wheel_link"> -->
+          <!-- <slip_compliance_lateral>0.75</slip_compliance_lateral> -->
+          <!-- <slip_compliance_longitudinal>0.75</slip_compliance_longitudinal> -->
+          <!-- <wheel_normal_force>113</wheel_normal_force> -->
+          <!-- <wheel_radius>${a300_outdoor_wheel_radius}</wheel_radius> -->
+        <!-- </wheel> -->
+      <!-- </plugin> -->
+    <!-- </gazebo> -->
 
     <joint name="${prefix}_${side}_wheel_joint" type="continuous">
       <parent link="${prefix}_${side}_motor_mount"/>

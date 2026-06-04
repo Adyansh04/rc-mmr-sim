@@ -32,7 +32,7 @@ def generate_launch_description():
 
     arg_use_fake_hardware = DeclareLaunchArgument(
         'use_fake_hardware',
-        default_value='false',
+        default_value='true',
         description='Use fake hardware if true'
     )
 
@@ -72,6 +72,9 @@ def generate_launch_description():
             namespace,
             ' ',
             'use_fake_hardware:=',
+            use_fake_hardware,
+            ' ',
+            'use_mock_hardware:=',
             use_fake_hardware,
             ' ',
             'use_manipulation_controllers:=',
