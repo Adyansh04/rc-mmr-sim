@@ -5,7 +5,7 @@
   <xacro:arg name="use_mock_hardware" default="$(arg use_fake_hardware)"/>
   <xacro:arg name="use_manipulation_controllers" default="false"/>
 
-  <xacro:include filename="$(find ur_description)/urdf/ur_macro.xacro"/>
+  <xacro:include filename="$(find rc_manipulators_description)/urdf/arm/ur_description_webots/urdf/ur_macro.xacro"/>
 
   <xacro:macro name="universal_robots" params="
     name
@@ -53,10 +53,10 @@
     <!-- Default Description Parameters -->
     <xacro:property name="_tf_prefix" value="${name}_" lazy_eval="false"/>
     <xacro:property name="_initial_positions" value="${dict(shoulder_pan_joint=0.0,shoulder_lift_joint=-1.57,elbow_joint=0.0,wrist_1_joint=-1.57,wrist_2_joint=0.0,wrist_3_joint=0.0)}" lazy_eval="false"/>
-    <xacro:property name="_joint_limits_parameters_file" value="$(find ur_description)/config/${ur_type}/joint_limits.yaml" lazy_eval="false"/>
-    <xacro:property name="_kinematics_parameters_file" value="$(find ur_description)/config/${ur_type}/default_kinematics.yaml" lazy_eval="false"/>
-    <xacro:property name="_physical_parameters_file" value="$(find ur_description)/config/${ur_type}/physical_parameters.yaml" lazy_eval="false"/>
-    <xacro:property name="_visual_parameters_file" value="$(find ur_description)/config/${ur_type}/visual_parameters.yaml" lazy_eval="false"/>
+    <xacro:property name="_joint_limits_parameters_file" value="$(find rc_manipulators_description)/urdf/arm/ur_description_webots/config/${ur_type}/joint_limits.yaml" lazy_eval="false"/>
+    <xacro:property name="_kinematics_parameters_file" value="$(find rc_manipulators_description)/urdf/arm/ur_description_webots/config/${ur_type}/default_kinematics.yaml" lazy_eval="false"/>
+    <xacro:property name="_physical_parameters_file" value="$(find rc_manipulators_description)/urdf/arm/ur_description_webots/config/${ur_type}/physical_parameters.yaml" lazy_eval="false"/>
+    <xacro:property name="_visual_parameters_file" value="$(find rc_manipulators_description)/urdf/arm/ur_description_webots/config/${ur_type}/visual_parameters.yaml" lazy_eval="false"/>
     <xacro:property name="_safety_limits" value="false" lazy_eval="false"/>
     <xacro:property name="_safety_pos_margin" value="0.15" lazy_eval="false"/>
     <xacro:property name="_safety_k_position" value="20" lazy_eval="false"/>
@@ -220,65 +220,25 @@
 
     <!-- Universal Robots ROS2 Description -->
     <xacro:ur_robot
-      name="${name}"
-      tf_prefix="${_tf_prefix}"
-      parent="${parent_link}"
+      prefix="${_tf_prefix}"
       joint_limits_parameters_file="${_joint_limits_parameters_file}"
       kinematics_parameters_file="${_kinematics_parameters_file}"
       physical_parameters_file="${_physical_parameters_file}"
       visual_parameters_file="${_visual_parameters_file}"
       safety_limits="${_safety_limits}"
       safety_pos_margin="${_safety_pos_margin}"
-      safety_k_position="${_safety_k_position}">
-      <xacro:insert_block name="origin"/>
-    </xacro:ur_robot>
+      safety_k_position="${_safety_k_position}" />
+
+    <!-- Attach the arm to the parent link -->
+    <joint name="${_tf_prefix}base_joint" type="fixed">
+      <parent link="${parent_link}" />
+      <child link="${_tf_prefix}base_link" />
+      <xacro:insert_block name="origin" />
+    </joint>
 
     <!-- Use the right ros2_control depending on sim vs real -->
 
-    <xacro:if value="${_sim_ignition}">
-      <ros2_control name="${name}_hardware" type="system">
-        <hardware>
-          <!-- <plugin>gz_ros2_control/GazeboSimSystem</plugin> -->
-          <plugin>webots_ros2_control::Ros2ControlSystem</plugin>
-        </hardware>
-
-        <joint name="${name}_shoulder_pan_joint">
-          <command_interface name="position"/>
-          <state_interface name="position"/>
-          <state_interface name="velocity"/>
-        </joint>
-        <joint name="${name}_shoulder_lift_joint">
-          <command_interface name="position"/>
-          <state_interface name="position"/>
-          <state_interface name="velocity"/>
-        </joint>
-        <joint name="${name}_elbow_joint">
-          <command_interface name="position"/>
-          <state_interface name="position"/>
-          <state_interface name="velocity"/>
-        </joint>
-        <joint name="${name}_wrist_1_joint">
-          <command_interface name="position"/>
-          <state_interface name="position"/>
-          <state_interface name="velocity"/>
-        </joint>
-        <joint name="${name}_wrist_2_joint">
-          <command_interface name="position"/>
-          <state_interface name="position"/>
-          <state_interface name="velocity"/>
-        </joint>
-        <joint name="${name}_wrist_3_joint">
-          <command_interface name="position"/>
-          <state_interface name="position"/>
-          <state_interface name="velocity"/>
-        </joint>
-      </ros2_control>
-
-      <!-- <gazebo> -->
-        <!-- <plugin filename="gz_ros2_control-system" -->
-                <!-- name="gz_ros2_control::GazeboSimROS2ControlPlugin"/> -->
-      <!-- </gazebo> -->
-    </xacro:if>
+    
 
     <!-- REAL ROBOT: only include the UR driver when NOT sim -->
     <xacro:unless value="${_sim_ignition}">

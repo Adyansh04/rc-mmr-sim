@@ -317,4 +317,28 @@
     <disable_collisions link1="right_suspension_beam_link" link2="right_suspension_beam_spacer_link" reason="Adjacent"/>
     <disable_collisions link1="right_suspension_beam_link" link2="top_plate_link" reason="Never"/>
     <disable_collisions link1="right_suspension_beam_spacer_link" link2="top_plate_link" reason="Never"/>
+    <disable_collisions link1="lidar2d_0_link" link2="top_plate_link" reason="Adjacent"/>
+    <disable_collisions link1="lidar2d_1_link" link2="top_plate_link" reason="Adjacent"/>
+    <disable_collisions link1="lidar2d_0_link" link2="arm_0_base_link" reason="Never"/>
+    <disable_collisions link1="lidar2d_0_link" link2="arm_0_base_link_inertia" reason="Never"/>
+    <disable_collisions link1="lidar2d_0_link" link2="arm_0_shoulder_link" reason="Never"/>
+    <disable_collisions link1="lidar2d_1_link" link2="arm_0_base_link" reason="Never"/>
+    <disable_collisions link1="lidar2d_1_link" link2="arm_0_base_link_inertia" reason="Never"/>
+    <disable_collisions link1="lidar2d_1_link" link2="arm_0_shoulder_link" reason="Never"/>
+    <disable_collisions link1="lidar2d_0_link" link2="chassis_link" reason="Never"/>
+    <disable_collisions link1="lidar2d_1_link" link2="chassis_link" reason="Never"/>
+    <disable_collisions link1="lidar2d_0_link" link2="lidar2d_1_link" reason="Never"/>
+    <disable_collisions link1="lidar2d_0_laser" link2="top_plate_link" reason="Never"/>
+    <disable_collisions link1="lidar2d_1_laser" link2="top_plate_link" reason="Never"/>
+    <disable_collisions link1="lidar2d_0_laser" link2="arm_0_base_link" reason="Never"/>
+    <disable_collisions link1="lidar2d_0_laser" link2="arm_0_base_link_inertia" reason="Never"/>
+    <disable_collisions link1="lidar2d_0_laser" link2="arm_0_shoulder_link" reason="Never"/>
+    <disable_collisions link1="lidar2d_1_laser" link2="arm_0_base_link" reason="Never"/>
+    <disable_collisions link1="lidar2d_1_laser" link2="arm_0_base_link_inertia" reason="Never"/>
+    <disable_collisions link1="lidar2d_1_laser" link2="arm_0_shoulder_link" reason="Never"/>
+    <disable_collisions link1="lidar2d_0_laser" link2="chassis_link" reason="Never"/>
+    <disable_collisions link1="lidar2d_1_laser" link2="chassis_link" reason="Never"/>
+    <disable_collisions link1="lidar2d_0_laser" link2="lidar2d_1_link" reason="Never"/>
+    <disable_collisions link1="lidar2d_1_laser" link2="lidar2d_0_link" reason="Never"/>
+    <disable_collisions link1="lidar2d_0_laser" link2="lidar2d_1_laser" reason="Never"/>
 </robot>

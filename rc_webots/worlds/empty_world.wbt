@@ -18,10 +18,3 @@ TexturedBackgroundLight {
 RectangleArena {
   floorSize 10 10
 }
-
-# --- ADDED: The Supervisor Node ---
-Robot {
-  name "Ros2Supervisor"
-  controller "<extern>"
-  supervisor TRUE
-}

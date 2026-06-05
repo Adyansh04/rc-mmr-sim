@@ -6,6 +6,8 @@
   <xacro:property name="a300_outdoor_wheel_width" value="0.1143" />
 
   <xacro:macro name="a300_outdoor_wheel" params="prefix side">
+    <xacro:property name="translation_y" value="${0.0655 if side == 'left' else -0.0655}"/>
+
     <link name="${prefix}_${side}_wheel_link">
       <inertial>
         <mass value="${a300_outdoor_wheel_mass}" />
@@ -42,7 +44,8 @@
     <!-- </gazebo> -->
 
     <joint name="${prefix}_${side}_wheel_joint" type="continuous">
-      <parent link="${prefix}_${side}_motor_mount"/>
+      <origin xyz="0 ${translation_y} 0" rpy="0 0 0"/>
+      <parent link="${prefix}_${side}_motor_link"/>
       <child link="${prefix}_${side}_wheel_link"/>
       <axis xyz="0 1 0" rpy="0 0 0" />
     </joint>

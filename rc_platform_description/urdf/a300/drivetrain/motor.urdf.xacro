@@ -3,7 +3,6 @@
 
   <xacro:macro name="a300_motor" params="prefix side">
     <xacro:property name="rotation_yaw" value="${math.pi if side == 'left' else 0}"/>
-    <xacro:property name="translation_y" value="${0.0655 if side == 'left' else -0.0655}"/>
 
     <link name="${prefix}_${side}_motor_link">
       <visual>
@@ -24,14 +23,6 @@
       <parent link="${side}_suspension_beam_${prefix}_mount"/>
       <child link="${prefix}_${side}_motor_link"/>
       <origin rpy="0 0 0"/>
-    </joint>
-
-    <link name="${prefix}_${side}_motor_mount"/>
-
-    <joint name="${prefix}_${side}_motor_mount_joint" type="fixed">
-      <parent link="${prefix}_${side}_motor_link"/>
-      <child link="${prefix}_${side}_motor_mount"/>
-      <origin xyz="0 ${translation_y} 0"/>
     </joint>
 
   </xacro:macro>

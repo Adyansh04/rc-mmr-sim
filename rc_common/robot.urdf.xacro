@@ -37,13 +37,13 @@
 
   <!-- lidar2d_0 -->
   <xacro:include filename="$(find rc_sensors_description)/urdf/hokuyo_ust.urdf.xacro"/>
-  <xacro:hokuyo_ust name="lidar2d_0" parent_link="top_plate_front_mount" ang_res="0.5" min_ang="-3.141592653589793" max_ang="3.141592653589793" min_range="0.05" max_range="25.0" update_rate="40">
+  <xacro:hokuyo_ust name="lidar2d_0" parent_link="top_plate_link" ang_res="0.5" min_ang="-3.141592653589793" max_ang="3.141592653589793" min_range="0.05" max_range="25.0" update_rate="40">
     <origin xyz="-0.1 0.0 0.0" rpy="0.0 0.0 0.0"/>
   </xacro:hokuyo_ust>
 
   <!-- lidar2d_1 -->
   <xacro:include filename="$(find rc_sensors_description)/urdf/hokuyo_ust.urdf.xacro"/>
-  <xacro:hokuyo_ust name="lidar2d_1" parent_link="top_plate_rear_mount" ang_res="0.5" min_ang="-3.141592653589793" max_ang="3.141592653589793" min_range="0.05" max_range="25.0" update_rate="40">
+  <xacro:hokuyo_ust name="lidar2d_1" parent_link="top_plate_link" ang_res="0.5" min_ang="-3.141592653589793" max_ang="3.141592653589793" min_range="0.05" max_range="25.0" update_rate="40">
     <origin xyz="0.1 0.0 0.0" rpy="0.0 0.0 3.1415"/>
   </xacro:hokuyo_ust>
 
@@ -64,13 +64,13 @@
 
   <!-- arm_0 -->
   <xacro:include filename="$(find rc_manipulators_description)/urdf/arm/universal_robots.urdf.xacro"/>
-  <xacro:universal_robots name="arm_0" parent_link="default_mount" ur_type="ur5e" kinematics_parameters_file="$(find ur_description)/config/ur5e/default_kinematics.yaml" headless_mode="False" robot_ip="192.168.131.40">
+  <xacro:universal_robots name="arm_0" parent_link="top_plate_link" ur_type="ur5e" kinematics_parameters_file="$(find rc_manipulators_description)/urdf/arm/ur_description_webots/config/ur5e/default_kinematics.yaml" headless_mode="False" robot_ip="192.168.131.40">
     <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
   </xacro:universal_robots>
 
   <!-- arm_0_gripper -->
   <xacro:include filename="$(find rc_manipulators_description)/urdf/gripper/robotiq_2f_140.urdf.xacro"/>
-  <xacro:robotiq_2f_140 name="arm_0_gripper" parent_link="arm_0_tool0">
+  <xacro:robotiq_2f_140 name="arm_0_gripper" parent_link="arm_0_tool0" use_controllers="true" sim_gazebo="true">
     <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
   </xacro:robotiq_2f_140>
 

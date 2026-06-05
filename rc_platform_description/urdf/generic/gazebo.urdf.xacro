@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://ros.org/wiki/xacro">
   <xacro:if value="$(arg is_sim)">
-    <ros2_control name="WebotsControl" type="system">
+    <ros2_control name="WebotsPlatformControl" type="system">
       <hardware>
         <plugin>webots_ros2_control::Ros2ControlSystem</plugin>
       </hardware>
