@@ -11,7 +11,7 @@
     </xacro:if>
     <xacro:if value="${model == 'd435'}">
       <xacro:include filename="$(find rc_sensors_description)/urdf/intel/d435.urdf.xacro" />
-      <xacro:sensor_d435 name="${name}" parent="${parent_link}">
+      <xacro:sensor_d435 name="${name}" parent="${parent_link}" use_nominal_extrinsics="true">
         <xacro:insert_block name="origin" />
       </xacro:sensor_d435>
     </xacro:if>
@@ -37,7 +37,7 @@
     <xacro:arg name="is_sim" default="false" />
 
     <xacro:if value="$(arg is_sim)">
-      <gazebo reference="${name}_link">
+      <gazebo reference="${name}_color_optical_frame">
         <sensor name="${name}" type="camera">
           <camera>
             <horizontal_fov>1.25</horizontal_fov>
@@ -55,6 +55,24 @@
         </sensor>
       </gazebo>
 
+      <gazebo reference="${name}_color_optical_frame">
+        <sensor name="${name}_depth" type="depth">
+          <camera>
+            <horizontal_fov>1.25</horizontal_fov>
+            <image>
+              <width>${image_width}</width>
+              <height>${image_height}</height>
+            </image>
+            <clip>
+              <near>0.1</near>
+              <far>200</far>
+            </clip>
+          </camera>
+          <always_on>1</always_on>
+          <update_rate>${update_rate}</update_rate>
+        </sensor>
+      </gazebo>
+
       <webots>
         <device reference="${name}" type="Camera">
           <ros>
@@ -62,8 +80,21 @@
             <updateRate>${update_rate}</updateRate>
             <topicName>$(arg namespace)/sensors/${name}</topicName>
             <alwaysOn>true</alwaysOn>
-            <frameName>${name}_link</frameName>
+            <frameName>${name}_color_optical_frame</frameName>
           </ros>
+        </device>
+        <device reference="${name}_depth" type="RangeFinder">
+          <ros>
+            <enabled>true</enabled>
+            <updateRate>${update_rate}</updateRate>
+            <topicName>$(arg namespace)/sensors/${name}/depth</topicName>
+            <imageSuffix>/image_raw</imageSuffix>
+            <pointCloudSuffix>/points</pointCloudSuffix>
+            <alwaysOn>true</alwaysOn>
+            <frameName>${name}_color_optical_frame</frameName>
+          </ros>
+          <minRange>0.1</minRange>
+          <maxRange>20.0</maxRange>
         </device>
       </webots>
     </xacro:if>

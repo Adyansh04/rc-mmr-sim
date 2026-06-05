@@ -9,11 +9,11 @@ rc:
       use_sim_time: True
       print_diagnostics: True
       frequency: 50.0
-      odom0: 'platform/odom'
+      odom0: '/rc/platform/odom'
       odom0_config: [True, True, False, False, False, True, True, True, False, False, False, True, False, False, False]
       odom0_differential: False
       odom0_queue_size: 10
-      imu0: 'sensors/imu_0/data'
+      imu0: '/sensors/imu_0/data'
       imu0_config: [False, False, False, False, False, False, False, False, False, False, False, True, True, False, False]
       imu0_differential: False
       imu0_queue_size: 10

@@ -43,7 +43,7 @@
 
     <joint name="${name}_laser_joint" type="fixed">
       <!-- This offset is from the base of the bracket to the LIDAR's focal point. -->
-      <origin xyz="0 0 0.0474" rpy="0 0 0" />
+      <origin xyz="0 0 0.0474" rpy="3.141592653589793 0 0" />
       <parent link="${name}_link" />
       <child link="${name}_laser" />
     </joint>
@@ -60,7 +60,7 @@
           <always_on>true</always_on>
           <gz_frame_id>${name}_laser</gz_frame_id>
           <topic>$(arg namespace)/sensors/${name}/scan</topic>
-          <lidar>
+          <ray>
             <scan>
               <horizontal>
                 <samples>${samples}</samples>
@@ -80,7 +80,7 @@
               <max>${max_range}</max>
               <resolution>0.01</resolution>
             </range>
-          </lidar>
+          </ray>
         </sensor>
       </gazebo>
 

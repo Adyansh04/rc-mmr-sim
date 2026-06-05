@@ -100,7 +100,11 @@ def launch_setup(context, *args, **kwargs):
     nav2 = GroupAction([
         PushRosNamespace(namespace),
         SetRemap('/' + namespace + '/odom',
-                 '/' + namespace + '/platform/odom'),
+                 '/' + namespace + '/platform_velocity_controller/odom'),
+        SetRemap('/' + namespace + '/platform/odom/filtered',
+                 '/' + namespace + '/platform_velocity_controller/odom'),
+        SetRemap('/' + namespace + '/cmd_vel',
+                 '/' + namespace + '/platform_velocity_controller/cmd_vel'),
 
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(launch_nav2),

@@ -36,14 +36,16 @@ def launch_setup(context, *args, **kwargs):
 
     # 2. Path to the robot description URDF/Xacro
     robot_description_path = os.path.join(pkg_rc_common, 'robot.urdf.xacro')
-    robot_description_content = xacro.process_file(
+    original_robot_description_content = xacro.process_file(
         robot_description_path,
         mappings={'is_sim': 'true'}
     ).toxml()
 
+    robot_description_content = original_robot_description_content
+
     # FIX 1: Strip 'file://' from mesh paths so Webots reads them as absolute Unix paths
     robot_description_content = robot_description_content.replace('file://', '')
-
+ 
     # FIX 2: Force the UR5e arm to use Webots control instead of Gazebo
     robot_description_content = robot_description_content.replace(
         '<plugin>gz_ros2_control/GazeboSimSystem</plugin>',
@@ -53,9 +55,9 @@ def launch_setup(context, *args, **kwargs):
         '<plugin>ign_ros2_control/IgnitionSystem</plugin>',
         '<plugin>webots_ros2_control::Ros2ControlSystem</plugin>'
     )
-
+ 
     import re
-
+ 
     def resolve_package_paths(match):
         package_name = match.group(1)
         rest_of_path = match.group(2)
@@ -64,18 +66,18 @@ def launch_setup(context, *args, **kwargs):
             return package_path + rest_of_path
         except Exception:
             return match.group(0)
-
+ 
     robot_description_content = re.sub(
         r'package://([^/]+)(/[^"\']*)',
         resolve_package_paths,
         robot_description_content
     )
-
+ 
     # XML merge: combine valid ros2_control joints and all webots blocks into single blocks.
     import xml.etree.ElementTree as ET
     try:
         root = ET.fromstring(robot_description_content)
-
+ 
         # 1. Merge all <webots> elements into a single <webots> block
         webots_elements = root.findall('.//webots')
         merged_webots = ET.Element('webots')
@@ -87,12 +89,12 @@ def launch_setup(context, *args, **kwargs):
                 if elem in parent:
                     parent.remove(elem)
                     break
-
+ 
         # 2. Add the ros2_control plugin to the merged <webots> block
         control_plugin = ET.Element('plugin', {'type': 'webots_ros2_control::Ros2Control'})
         merged_webots.append(control_plugin)
         root.append(merged_webots)
-
+ 
         physical_joint_names = {
             joint.get('name')
             for joint in root.findall('joint')
@@ -103,7 +105,7 @@ def launch_setup(context, *args, **kwargs):
         hardware = ET.SubElement(merged_control, 'hardware')
         plugin = ET.SubElement(hardware, 'plugin')
         plugin.text = 'webots_ros2_control::Ros2ControlSystem'
-
+ 
         seen_joint_names = set()
         skipped_control_names = []
         for elem in control_elements:
@@ -140,19 +142,19 @@ def launch_setup(context, *args, **kwargs):
             )
     except Exception as e:
         print("ERROR merging ros2_control blocks:", e)
-
+ 
     # Write the scrubbed URDF to a temporary file
     urdf_file = tempfile.NamedTemporaryFile(delete=False, suffix='.urdf', mode='w')
     urdf_file.write(robot_description_content)
     urdf_file.close()
-
+ 
     spawn_URDF_a300 = URDFSpawner(
         name='a300-00000',
         urdf_path=urdf_file.name,
         translation='0 0 0.25',
         rotation='0 0 1 0',
     )
-
+ 
     # 3. Robot state publisher — use the real robot description
     robot_state_publisher = Node(
         package='robot_state_publisher',
@@ -160,7 +162,7 @@ def launch_setup(context, *args, **kwargs):
         output='screen',
         namespace=namespace,
         parameters=[{
-            'robot_description': robot_description_content,
+            'robot_description': original_robot_description_content,
             'use_sim_time': use_sim_time,
         }],
         remappings=[
@@ -186,7 +188,14 @@ def launch_setup(context, *args, **kwargs):
         remappings=[
             ('/tf', 'tf'),
             ('/tf_static', 'tf_static'),
-            ('joint_states', 'platform/joint_states')
+            ('joint_states', 'platform/joint_states'),
+            ('/sensors/lidar2d_0/scan', 'sensors/lidar2d_0/scan'),
+            ('/sensors/lidar2d_1/scan', 'sensors/lidar2d_1/scan'),
+            ('/sensors/imu_0/data', 'sensors/imu_0/data'),
+            ('/sensors/camera_0/image_color', 'sensors/camera_0/image_color'),
+            ('/sensors/camera_0/camera_info', 'sensors/camera_0/camera_info'),
+            ('/sensors/camera_1/image_color', 'sensors/camera_1/image_color'),
+            ('/sensors/camera_1/camera_info', 'sensors/camera_1/camera_info'),
         ],
         respawn=True
     )
@@ -236,42 +245,10 @@ def launch_setup(context, *args, **kwargs):
         arm_0_gripper_controller_spawner,
     ]
 
-    # 6. RViz
-    launch_rviz = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            os.path.join(pkg_rc_viz, 'launch', 'view_robot.launch.py')
-        ),
-        launch_arguments={
-            'use_sim_time': 'true',
-            'namespace': namespace
-        }.items(),
-        condition=IfCondition(LaunchConfiguration('rviz'))
-    )
-
-    # 7. MoveIt 2
-    launch_moveit = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            os.path.join(pkg_rc_manipulators, 'launch', 'moveit.launch.py')
-        ),
-        launch_arguments={'use_sim_time': 'true'}.items(),
-        condition=IfCondition(LaunchConfiguration('moveit'))
-    )
-
-    # 8. Nav2
-    launch_nav2 = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            os.path.join(pkg_rc_nav2_demos, 'launch', 'nav2.launch.py')
-        ),
-        launch_arguments={'use_sim_time': 'true'}.items(),
-        condition=IfCondition(LaunchConfiguration('nav2'))
-    )
-
-    # Use WaitForControllerConnection to delay spawners and optional
-    # nodes until the Webots driver is fully connected — exactly like
-    # the Tiago demo does.
+    # Use WaitForControllerConnection to delay spawners until the Webots driver is fully connected
     waiting_nodes = WaitForControllerConnection(
         target_driver=webots_robot_driver,
-        nodes_to_start=ros_control_spawners + [launch_rviz, launch_moveit, launch_nav2]
+        nodes_to_start=ros_control_spawners
     )
 
     return [
@@ -288,7 +265,7 @@ def launch_setup(context, *args, **kwargs):
             )
         ),
 
-        # Wait for driver connection, then start spawners + optional nodes
+        # Wait for driver connection, then start spawners
         waiting_nodes,
 
         # Kill everything when Webots exits
@@ -331,34 +308,10 @@ def generate_launch_description():
         description='Use simulation clock'
     )
 
-    rviz_arg = DeclareLaunchArgument(
-        'rviz',
-        default_value='false',
-        choices=['true', 'false'],
-        description='Whether to start RViz'
-    )
-
-    moveit_arg = DeclareLaunchArgument(
-        'moveit',
-        default_value='false',
-        choices=['true', 'false'],
-        description='Whether to start MoveIt'
-    )
-
-    nav2_arg = DeclareLaunchArgument(
-        'nav2',
-        default_value='false',
-        choices=['true', 'false'],
-        description='Whether to start Nav2'
-    )
-
     return LaunchDescription([
         namespace_arg,
         controllers_arg,
         world_arg,
         use_sim_time_arg,
-        rviz_arg,
-        moveit_arg,
-        nav2_arg,
         OpaqueFunction(function=launch_setup)
     ])

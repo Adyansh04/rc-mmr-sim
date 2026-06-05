@@ -32,7 +32,7 @@ rc/platform_velocity_controller:
     pose_covariance_diagonal: [0.001, 0.001, 0.001, 0.001, 0.001, 0.01]
     twist_covariance_diagonal: [0.001, 0.001, 0.001, 0.001, 0.001, 0.01]
     open_loop: false
-    enable_odom_tf: false
+    enable_odom_tf: true
     tf_frame_prefix_enable: false
     cmd_vel_timeout: 0.5
     velocity_rolling_window_size: 5
