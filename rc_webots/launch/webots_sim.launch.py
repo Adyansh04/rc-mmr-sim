@@ -41,12 +41,13 @@ def launch_setup(context, *args, **kwargs):
         mappings={'is_sim': 'true'}
     ).toxml()
 
+    # Preprocess the URDF to be fully compatible with Webots
     robot_description_content = original_robot_description_content
 
-    # FIX 1: Strip 'file://' from mesh paths so Webots reads them as absolute Unix paths
+    # Strip 'file://' prefix from mesh paths to enable absolute local path resolution in Webots
     robot_description_content = robot_description_content.replace('file://', '')
  
-    # FIX 2: Force the UR5e arm to use Webots control instead of Gazebo
+    # Swap out gazebo_ros2_control plugins for Webots ros2_control system plugins
     robot_description_content = robot_description_content.replace(
         '<plugin>gz_ros2_control/GazeboSimSystem</plugin>',
         '<plugin>webots_ros2_control::Ros2ControlSystem</plugin>'

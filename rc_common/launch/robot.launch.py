@@ -5,6 +5,7 @@ from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, OpaqueFunction
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration
+from launch_ros.actions import Node
 
 
 def launch_setup(context, *args, **kwargs):
@@ -13,6 +14,7 @@ def launch_setup(context, *args, **kwargs):
     nav2 = context.perform_substitution(LaunchConfiguration('nav2')) == 'true'
     moveit = context.perform_substitution(LaunchConfiguration('moveit')) == 'true'
     rviz = context.perform_substitution(LaunchConfiguration('rviz')) == 'true'
+    teleop = context.perform_substitution(LaunchConfiguration('teleop')) == 'true'
     map_file = LaunchConfiguration('map')
     use_sim_time = LaunchConfiguration('use_sim_time')
 
@@ -104,6 +106,23 @@ def launch_setup(context, *args, **kwargs):
                     )
                 )
 
+    if teleop:
+        actions.append(
+            Node(
+                package='teleop_twist_keyboard',
+                executable='teleop_twist_keyboard',
+                name='teleop_twist_keyboard',
+                prefix='x-terminal-emulator -e',
+                parameters=[{
+                    'stamped': True
+                }],
+                remappings=[
+                    ('/cmd_vel', '/rc/platform_velocity_controller/cmd_vel')
+                ],
+                output='screen'
+            )
+        )
+
     return actions
 
 
@@ -136,6 +155,12 @@ def generate_launch_description():
                 default_value='true',
                 choices=['true', 'false'],
                 description='Launch Rviz visualizers',
+            ),
+            DeclareLaunchArgument(
+                'teleop',
+                default_value='true',
+                choices=['true', 'false'],
+                description='Launch teleop twist keyboard in a new terminal window',
             ),
             DeclareLaunchArgument(
                 'map', default_value=default_map, description='Path to the localization map file'
